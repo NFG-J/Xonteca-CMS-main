@@ -1,0 +1,43 @@
+{% load static %}
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}{{ site_settings.site_name }}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'cms/style.css' %}">
+    <style>
+      :root {
+        --bg: {{ site_settings.background_color }};
+        --surface: {{ site_settings.surface_color }};
+        --text: {{ site_settings.text_color }};
+        --muted: {{ site_settings.muted_text_color }};
+        --border: {{ site_settings.border_color }};
+        --brand: {{ site_settings.brand_color }};
+        --brand-dark: {{ site_settings.brand_dark_color }};
+        --accent-soft: {{ site_settings.accent_soft_color }};
+        --hero-end: {{ site_settings.hero_end_color }};
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-inner">
+        <a href="/" class="brand">{{ site_settings.site_name }}</a>
+        <nav class="nav">
+          {% for p in menu_pages %}
+            <a class="nav-link" href="/{{ p.slug }}/">{{ p.title }}</a>
+          {% endfor %}
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+      <small>{{ site_settings.footer_text }}</small>
+    </footer>
+  </body>
+</html>

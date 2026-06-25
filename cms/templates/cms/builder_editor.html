@@ -1,0 +1,126 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Builder Editor - {{ page.title }}</title>
+    <link rel="stylesheet" href="{% static 'web_design_studio/css/studio_style.css' %}">
+    <link rel="icon" href="{% static 'web_design_studio/img/design_it_logo.png' %}" type="image/png">
+    <link rel="preload" href="{% static 'web_design_studio/data/html_components.json' %}" as="fetch" type="application/json" crossorigin>
+    <link rel="preload" href="{% static 'web_design_studio/data/js_components.json' %}" as="fetch" type="application/json" crossorigin>
+    <link rel="preload" href="{% static 'web_design_studio/data/api_components.json' %}" as="fetch" type="application/json" crossorigin>
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta name="builder-state-url" content="{% url 'builder_state' page_id=page.id %}">
+    <meta name="builder-save-url" content="{% url 'builder_save' page_id=page.id %}">
+    <meta name="builder-publish-url" content="{% url 'builder_publish' page_id=page.id %}">
+    <meta name="builder-asset-base-url" content="{% static 'web_design_studio/' %}">
+    <meta name="page-id" content="{{ page.id }}">
+</head>
+<body>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+
+    <header class="top-navbar" role="banner">
+        <div class="nav-brand">
+            <img src="{% static 'web_design_studio/img/design_it_logo.png' %}" alt="DesignIT Logo" class="nav-logo">
+            <span class="brand-text">
+                <span class="brand-name">DesignIT</span><span class="brand-subtitle"> - {{ page.title }}</span>
+            </span>
+        </div>
+        <nav class="nav-links" role="navigation" aria-label="Builder actions">
+            <button id="undo" type="button" aria-label="Undo" disabled>Undo</button>
+            <button id="redo" type="button" aria-label="Redo" disabled>Redo</button>
+            <button id="clear" type="button" aria-label="Clear canvas">Clear</button>
+            <button id="export" type="button" aria-label="Export design">Export</button>
+            <button id="save-to-cms" type="button" aria-label="Save builder draft">Save Draft</button>
+            <button id="publish-to-cms" type="button" aria-label="Publish builder content">Publish</button>
+            <a href="{% url 'admin:cms_page_change' page.id %}" aria-label="Back to page admin">Admin</a>
+            {% if page.is_published %}
+                <a href="{% url 'page_detail' slug=page.slug %}" aria-label="View public page">View Page</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main id="main-content" class="container" role="main">
+        <aside class="menu" role="complementary" aria-label="Component library">
+            <h2 id="elements-heading">Elements</h2>
+            <div class="elements-container" role="list" aria-labelledby="elements-heading">
+                <div class="category-dropdown" data-category="html">
+                    <button class="dropdown-header" aria-expanded="false" aria-controls="html-elements">
+                        <span class="dropdown-icon">&gt;</span>
+                        <span class="dropdown-title">HTML Elements</span>
+                    </button>
+                    <div class="dropdown-content" id="html-elements" role="group" aria-labelledby="html-dropdown"></div>
+                </div>
+                <div class="category-dropdown" data-category="javascript">
+                    <button class="dropdown-header" aria-expanded="false" aria-controls="javascript-elements">
+                        <span class="dropdown-icon">&gt;</span>
+                        <span class="dropdown-title">JavaScript Elements</span>
+                    </button>
+                    <div class="dropdown-content" id="javascript-elements" role="group" aria-labelledby="javascript-dropdown"></div>
+                </div>
+                <div class="category-dropdown" data-category="webapis">
+                    <button class="dropdown-header" aria-expanded="false" aria-controls="webapis-elements">
+                        <span class="dropdown-icon">&gt;</span>
+                        <span class="dropdown-title">Web APIs</span>
+                    </button>
+                    <div class="dropdown-content" id="webapis-elements" role="group" aria-labelledby="webapis-dropdown"></div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="resizer" id="resizer1" role="separator" aria-orientation="vertical" aria-label="Resize component library panel" tabindex="0"></div>
+
+        <section class="canvas" id="canvas" role="region" aria-label="Design canvas" aria-describedby="canvas-description">
+            <h2 id="canvas-heading">Canvas</h2>
+            <p id="canvas-description" class="sr-only">Drop components from the library here to build the page.</p>
+        </section>
+
+        <div class="resizer" id="resizer2" role="separator" aria-orientation="vertical" aria-label="Resize code panel" tabindex="0"></div>
+
+        <aside class="side-panel" role="complementary" aria-label="Code and references">
+            <div class="tab-container" role="tablist" aria-label="Code view tabs">
+                <button class="copy-btn" id="copyBtn" type="button" title="Copy content" aria-label="Copy current tab content">Copy</button>
+                <button class="tab" role="tab" aria-selected="false" aria-controls="tab1" id="tab-button-1">HTML</button>
+                <button class="tab" role="tab" aria-selected="false" aria-controls="tab2" id="tab-button-2">CSS</button>
+                <button class="tab" role="tab" aria-selected="false" aria-controls="tab3" id="tab-button-3">JS</button>
+                <button class="tab" role="tab" aria-selected="false" aria-controls="tab4" id="tab-button-4">References</button>
+            </div>
+
+            <div id="tab1" class="tab-content" role="tabpanel" aria-labelledby="tab-button-1" aria-label="HTML code">
+                <h3 class="sr-only">HTML Code</h3>
+                <pre aria-live="polite" aria-atomic="false"></pre>
+            </div>
+            <div id="tab2" class="tab-content" role="tabpanel" aria-labelledby="tab-button-2" aria-label="CSS code">
+                <h3 class="sr-only">CSS Code</h3>
+                <pre aria-live="polite" aria-atomic="false"></pre>
+            </div>
+            <div id="tab3" class="tab-content" role="tabpanel" aria-labelledby="tab-button-3" aria-label="JavaScript code">
+                <h3 class="sr-only">JavaScript Code</h3>
+                <pre aria-live="polite" aria-atomic="false"></pre>
+            </div>
+            <div id="tab4" class="tab-content" role="tabpanel" aria-labelledby="tab-button-4" aria-label="Component references">
+                <h3 class="sr-only">Component References</h3>
+                <div aria-live="polite" aria-atomic="false"><p></p></div>
+            </div>
+        </aside>
+    </main>
+
+    <div id="status-region" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+    <div id="error-boundary" class="hidden" role="alert" aria-live="assertive"></div>
+
+    <script>
+        window.AgentCMSBuilder = {
+            pageId: "{{ page.id }}",
+            assetBaseUrl: "{% static 'web_design_studio/' %}"
+        };
+    </script>
+    <script type="module" src="{% static 'web_design_studio/js/app.js' %}?v=20260625a"></script>
+    <script type="module" src="{% static 'cms/builder_integration.js' %}?v=20260625b"></script>
+    <noscript>
+        <div style="padding: 20px; text-align: center; background: #ffeaa7; border: 1px solid #fdcb6e;">
+            JavaScript is required to use the builder.
+        </div>
+    </noscript>
+</body>
+</html>

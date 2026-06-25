@@ -1,0 +1,28 @@
+{% extends "cms/base.html" %}
+
+{% block content %}
+  <section class="hero">
+    <p class="eyebrow">{{ site_settings.hero_eyebrow }}</p>
+    <h1>{{ site_settings.hero_title }}</h1>
+    <p class="hero-copy">{{ site_settings.hero_copy }}</p>
+  </section>
+
+  <section class="page-grid-section">
+    <div class="section-heading-row">
+      <h2>Published pages</h2>
+      <span class="page-count">{{ pages|length }} total</span>
+    </div>
+
+    <div class="page-grid">
+      {% for page in pages %}
+        <article class="page-card">
+          <h3><a href="/{{ page.slug }}/">{{ page.title }}</a></h3>
+          <p class="card-copy">Open this page to read and manage its full content.</p>
+          <a class="card-link" href="/{{ page.slug }}/">Read page →</a>
+        </article>
+      {% empty %}
+        <p class="empty-state">No published pages yet. Create one in admin and publish it to see it here.</p>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}
