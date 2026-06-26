@@ -1,0 +1,16 @@
+{% extends "cms/base.html" %}
+
+{% block content %}
+  <h1>{{ page.title }}</h1>
+  {% if page.has_published_builder_content %}
+    {% if page.published_css %}
+      <style>{{ page.published_css|safe }}</style>
+    {% endif %}
+    <div class="content builder-content">{{ page.published_html|safe }}</div>
+    {% if page.published_js %}
+      <script>{{ page.published_js|safe }}</script>
+    {% endif %}
+  {% else %}
+    <div class="content">{{ page.sanitized_body|safe }}</div>
+  {% endif %}
+{% endblock %}
