@@ -1,0 +1,6 @@
+asgiref==3.11.0
+Django==6.0
+sqlparse==0.5.4
+tzdata==2025.2
+bleach==6.2.0
+django-tinymce==4.1.0
