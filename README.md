@@ -90,11 +90,11 @@ AgentCMS/
 
 ## Installation Guide (Local Setup)
 
-### 1. Clone the Repository
+### 1. Clone the Repository (edited; NFG)
 
 ```bash
-git clone https://github.com/vicnorm/AgentCMS.git
-cd AgentCMS
+git clone https://github.com/NFG-J/Xonteca-CMS-main.git
+cd Xonteca-CMS-main
 ```
 
 ### 2. Create a Virtual Environment
